@@ -18,7 +18,7 @@ sample <b> route.json </b>
 ```javascript
 {
     "GLOBAL":{
-    	"cp":"./controllers/my_controller",
+        "cp":"./controllers/my_controller",
 		"other_controller":"./controllers/other_controller.js"
 	},
 	"GET":[
@@ -43,15 +43,29 @@ sample <b> route.json </b>
 ```
 Resource action mapping
 
-Actions are then mapped accordingly:
+Actions are mapped accordingly:
+
 ```javascript
-GET     /route_given                ->  index
-GET     /route_given/new            ->  new
-POST    /route_given                ->  create
-GET     /route_given/:id            ->  show
-GET     /route_given/:id/edit       ->  edit
-PUT     /route_given/:id            ->  update
-DELETE  /route_given/:id            ->  destroy
+
+"RESOURCE":[
+    {"/user":"./controllers/user_controller.js"}
+]
+
+GET     /user               		->  index
+GET     /user.:format               ->  index
+GET     /user/new                   ->  new
+GET     /user/new.:format           ->  new
+POST    /user                       ->  create
+POST    /user.:format           	->  create
+GET     /user/:id           		->  show
+GET     /user/:id.:format       	->  show
+GET     /user/:id/edit              ->  edit
+GET     /user/:id/edit.:format      ->  edit
+PUT     /user/:id                   ->  update
+PUT     /user/:id.:format           ->  update
+DELETE  /user/:id                   ->  destroy
+DELETE  /user/:id.:format           ->  destroy
+
 ```
 Basic syntax for config.json
 
@@ -65,6 +79,11 @@ OR
 OR
 
 ```javascript
-{"/app_route" : ["path_to_controller:middleware_one", "path_to_controller:middleware_two", "path_to_controller:method_name" ]}
+{"/app_route" : [
+	"path_to_controller:middleware_one", 
+	"path_to_controller:middleware_two", 
+	"path_to_controller:method_name" 
+	]
+}
 ```
 

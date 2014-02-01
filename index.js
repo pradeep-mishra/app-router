@@ -109,14 +109,15 @@ var resourceThis= function(route, controller, expressApp, _GLOBAL){
 	Object.keys(resourcing).forEach(function(item){
 		var action = require(controller)[item];
 		if(typeof action != "function"){
-			throw new Error("cannot not found method "+ item + " in controller " + controller);
+			throw new Error("cant find action "+ item + " in controller " + controller);
 		}
-		expressApp[resourcing[item].verb]((route + resourcing[item].route), action);
+		var appRoute = route + resourcing[item].route;
+		expressApp[resourcing[item].verb](appRoute+".:format", action);
+		expressApp[resourcing[item].verb](appRoute, action);		
 	});
 }
 
 var router=module.exports= function(expressApp){
-	var exp= expressApp;
 	return {
 		route:function(jsonPath){
 			var pathObj = fs.statSync(jsonPath)	

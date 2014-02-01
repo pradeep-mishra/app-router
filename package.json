@@ -1,6 +1,6 @@
 {
     "name": "app-router",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "description":"Routing for expressjs",
     "keywords":["express router", "application router", "app-router", "express", "connect", "router", "routing", "json to router", "json-router"],
     "bugs":{ 
