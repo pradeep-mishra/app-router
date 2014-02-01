@@ -1,0 +1,23 @@
+{
+    "GLOBAL":{
+    	"cp":"./controllers/my_controller",
+		"other_controller":"./controllers/other_controller.js"
+	},
+	"GET":[
+		{"/" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"]},
+		{"/my" : ["{cp}:myClass.myMethod"]}
+	],
+	"POST":[
+		{"/":["./controllers/my_controller:createApp"]}
+	],
+	"PUT":[
+		{"/":["{cp}:helloPut"]}
+	],
+	"DELETE":[
+		{"/":["{cp}:destroyApp"]}
+	],
+	"RESOURCE":[
+		{"/res":"{cp}"},
+        {"/user":"./controllers/user_controller.js"}
+	]
+}

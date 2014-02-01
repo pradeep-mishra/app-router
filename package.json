@@ -1,0 +1,19 @@
+{
+    "name": "express_router",
+    "version": "1.0.0",
+    "description":"Routing for expressjs",
+    "keywords":["express-router", "express", "router", "routing", "json to router", "json-router"],
+    "bugs":{ 
+    	"url" : "https://github.com/pradeep-mishra/express-router/issues"
+	},
+	"author":{
+		"name" : "Pradeep Mishra", 
+		"email" : "pradeep23oct@gmail.com"
+	},
+	"main":"index.js",
+	"repository" :{ 
+		"type" : "git", 
+		"url" : "https://github.com/pradeep-mishra/express-router.git"
+  	},
+  	"license":"MIT"
+}
