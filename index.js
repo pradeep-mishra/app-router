@@ -1,4 +1,5 @@
-var fs=require("fs");
+var fs=require("fs"),
+	util=require("util");
 
 var interPolate = function (str, iObj) {
     return str.replace(/{([^{}]+)}/g,
@@ -29,11 +30,22 @@ var startRouting= function(routes, expressApp){
     });
 }
 
-var routeMethod = function(obj, methodType, _GLOBAL, expressApp){
-	obj.forEach(function(thisRoute){
-		Object.keys(thisRoute).forEach(function(item){
-			routeThis(item, methodType, thisRoute[item], expressApp, _GLOBAL);
-		});
+var routeMethod = function(routes, methodType, _GLOBAL, expressApp){
+	if(util.isArray(routes)){
+		return routes.forEach(function(thisRoute){
+			processRoute(thisRoute, methodType, _GLOBAL, expressApp);
+		});	
+	}
+	processRoute(routes, methodType, _GLOBAL, expressApp);
+	
+}
+
+var processRoute = function(routes, methodType, _GLOBAL, expressApp ){
+	Object.keys(routes).forEach(function(item){
+		var controller =util.isArray(routes[item])?
+						interPolateArray(routes[item], _GLOBAL):
+						interPolate(routes[item], _GLOBAL);
+		routeThis(item, methodType, controller, expressApp, _GLOBAL);
 	});
 }
 
@@ -42,13 +54,16 @@ var routeThis = function(route, methodType, controllers, expressApp, _GLOBAL){
 	if(methodType=="resource"){
 		return resourceThis(route, controllers, expressApp, _GLOBAL);
 	}
-	controllers=interPolateArray(controllers, _GLOBAL);
-	var actionArray= controllers.map(resolveThisMethod);
-	actionArray.unshift(route);
-	if(methodType=="delete"){
-		methodType="del";
+	var actions;
+	if(util.isArray(controllers)){
+		actions=controllers.map(resolveThisMethod)
+	}else{
+		actions=[resolveThisMethod(controllers)];
 	}
-	expressApp[methodType].apply(expressApp, actionArray);
+	actions.unshift(route);
+	if(methodType=="delete"){methodType="del"}
+	expressApp[methodType].apply(expressApp, actions);
+	//console.log(methodType,route);
 }
 
 var resolveThisMethod =function(item){
@@ -61,7 +76,7 @@ var resolveThisMethod =function(item){
 		if(typeof controller[item] != 'undefined'){
 			controller=controller[item];
 		}else{
-			throw new Error("Method " + item + " not found in controller, " + c_a[0]);
+			throw new Error("cant find action " + item + " in controller " + c_a[0]);
 		}
 	});
 	return controller;
@@ -105,7 +120,6 @@ var resourceThis= function(route, controller, expressApp, _GLOBAL){
 			route:"/:id"
 		}
 	}
-	controller=interPolate(controller, _GLOBAL);
 	Object.keys(resourcing).forEach(function(item){
 		var action = require(controller)[item];
 		if(typeof action != "function"){
@@ -113,19 +127,17 @@ var resourceThis= function(route, controller, expressApp, _GLOBAL){
 		}
 		var appRoute = route + resourcing[item].route;
 		expressApp[resourcing[item].verb](appRoute+".:format", action);
-		expressApp[resourcing[item].verb](appRoute, action);		
+		expressApp[resourcing[item].verb](appRoute, action);	
+		//console.log(resourcing[item].verb,appRoute+".:format");
+		//console.log(resourcing[item].verb,appRoute);	
 	});
 }
 
-var router=module.exports= function(expressApp){
+module.exports= function(expressApp){
 	return {
 		route:function(jsonPath){
-			var pathObj = fs.statSync(jsonPath)	
-			if(pathObj.isFile()){
-				var routes = require(jsonPath);
-				startRouting(routes, expressApp);
-			}
-			return Error("Routing JSON is not valid");	
+			var routes = require(jsonPath);
+			startRouting(routes, expressApp);
 		}
 	}
 	

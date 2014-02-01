@@ -21,23 +21,23 @@ sample <b> route.json </b>
         "cp":"./controllers/my_controller",
 		"other_controller":"./controllers/other_controller.js"
 	},
-	"GET":[
-		{"/" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"]},
-		{"/:id" : ["{cp}:myClass.myMethod"]}
-	],
-	"POST":[
-		{"/":["./controllers/my_controller:createApp"]}
-	],
-	"PUT":[
-		{"/":["{other_controller}:helloPut"]}
-	],
-	"DELETE":[
-		{"/":["./controllers/other_controller.js:destroyApp"]}
-	],
-	"RESOURCE":[
-		{"/res":"{cp}"},
-        {"/user":"./controllers/user_controller.js"}
-	]
+	"GET":{
+		"/" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"],
+		"/:id" : ["{cp}:myClass.myMethod"]
+	},
+	"POST":{
+		"/":["./controllers/my_controller:createApp"]
+	},
+	"PUT":{
+		"/":["{other_controller}:helloPut"]
+	},
+	"DELETE":{
+		"/":["./controllers/other_controller.js:destroyApp"]
+	},
+	"RESOURCE":{
+		"/res":"{cp}",
+		"/user":"./controllers/user_controller.js"
+	}
 }
 
 ```
@@ -47,9 +47,10 @@ Actions are mapped accordingly:
 
 ```javascript
 
-"RESOURCE":[
-    {"/user":"./controllers/user_controller.js"}
-]
+"RESOURCE":{
+
+	"/user":"./controllers/user_controller.js"
+}
 
 GET     /user               		->  index
 GET     /user.:format               ->  index

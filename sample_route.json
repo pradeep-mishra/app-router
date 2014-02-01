@@ -1,23 +1,68 @@
+
+
 {
     "GLOBAL":{
-    	"cp":"./controllers/my_controller",
+        "cp":"./controllers/my_controller",
+		"other_controller":"./controllers/other_controller.js"
+	},
+	"GET":{
+		"/" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"],
+		"/:id" : ["{cp}:myClass.myMethod"]
+	},
+	"POST":{
+		"/":["./controllers/my_controller:createApp"]
+	},
+	"PUT":{
+		"/":["{other_controller}:helloPut"]
+	},
+	"DELETE":{
+		"/":["./controllers/other_controller.js:destroyApp"]
+	},
+	"RESOURCE":{
+		"/res":"{cp}",
+		"/user":"./controllers/user_controller.js"
+	}
+}
+
+//  OR for more complex routing
+
+{
+	"GLOBAL":{
+		"cp":"./controllers/my_controller",
 		"other_controller":"./controllers/other_controller.js"
 	},
 	"GET":[
-		{"/" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"]},
-		{"/my" : ["{cp}:myClass.myMethod"]}
+		{
+			"/auth" : ["{cp}:myAuthAction"],
+			"/user" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"]
+		},
+		{
+			"/:id" : ["{cp}:myClass.myMethod"]
+		}
 	],
 	"POST":[
-		{"/":["./controllers/my_controller:createApp"]}
+		{
+			"/":["./controllers/my_controller:createApp"]
+		}
 	],
 	"PUT":[
-		{"/":["{cp}:helloPut"]}
+		{
+			"/":["{other_controller}:helloPut"]
+		}
 	],
 	"DELETE":[
-		{"/":["{cp}:destroyApp"]}
+		{
+			"/":["./controllers/other_controller.js:destroyApp"]
+		}
 	],
 	"RESOURCE":[
-		{"/res":"{cp}"},
-        {"/user":"./controllers/user_controller.js"}
+		{
+			"/res":"{cp}"
+		},
+		{
+			"/user":"./controllers/user_controller.js"
+		}
 	]
 }
+
+
