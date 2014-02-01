@@ -1,4 +1,4 @@
-express-router
+app-router
 ==============
 
 routing for expressjs
@@ -8,7 +8,7 @@ routing for expressjs
 ```javascript
 var express= require("express");
 var app = express();
-var router = require("express-router");
+var router = require("app-router");
 router(app).route("./route.json");
 
 ```
@@ -45,15 +45,15 @@ sample <b> route.json </b>
 Basic syntax for config.json
 
 ```javascript
-{"/express_route" : [ "path_to_controller:method_name" ]}
+{"/app_route" : [ "path_to_controller:method_name" ]}
 ```
 OR
 ```javascript
-{"/express_route" : [ "path_to_controller:class_name.method_name" ]}
+{"/app_route" : [ "path_to_controller:class_name.method_name" ]}
 ```
 OR
 
 ```javascript
-{"/express_route" : ["path_to_controller:middleware_one", "path_to_controller:middleware_two", "path_to_controller:method_name" ]}
+{"/app_route" : ["path_to_controller:middleware_one", "path_to_controller:middleware_two", "path_to_controller:method_name" ]}
 ```
 
