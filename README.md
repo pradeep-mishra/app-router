@@ -19,24 +19,24 @@ sample <b> route.json </b>
 {
     "GLOBAL":{
         "cp":"./controllers/my_controller",
-		"other_controller":"./controllers/other_controller.js"
+    	"other_controller":"./controllers/other_controller.js"
 	},
 	"GET":{
-		"/" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"],
-		"/:id" : ["{cp}:myClass.myMethod"]
+		"/user" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"],
+		"/user/:id" : "{cp}:myClass.myMethod"
 	},
 	"POST":{
-		"/":["./controllers/my_controller:createApp"]
+		"/hello" : "./controllers/my_controller:createApp"
 	},
 	"PUT":{
-		"/":["{other_controller}:helloPut"]
+		"/hello" : "{other_controller}:helloPut"
 	},
 	"DELETE":{
-		"/":["./controllers/other_controller.js:destroyApp"]
+		"/user" : "./controllers/other_controller.js:destroyApp"
 	},
 	"RESOURCE":{
-		"/res":"{cp}",
-		"/user":"./controllers/user_controller.js"
+		"/res" 	: "{cp}",
+		"/user"	: "./controllers/user_controller.js"
 	}
 }
 
@@ -48,10 +48,10 @@ Actions are mapped accordingly:
 ```javascript
 
 "RESOURCE":{
-
-	"/user":"./controllers/user_controller.js"
+	"/user" : "./controllers/user_controller.js"
 }
 
+Method  Route                           Action (in controller ./controllers/user_controller.js)
 GET     /user               		->  index
 GET     /user.:format               ->  index
 GET     /user/new                   ->  new
