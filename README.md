@@ -22,10 +22,10 @@ sample <b> route.json </b>
 
 ```javascript
 {
-    "GLOBAL":{
+    "VARIABLE":{
         "cp":"./controllers/my_controller",
         "other_controller":"./controllers/other_controller.js"
-	},
+    },
 	"GET":{
 		"/user" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"],
 		"/user/:id" : "{cp}:myClass.myMethod"
@@ -56,7 +56,7 @@ Actions are mapped accordingly:
 	"/user" : "./controllers/user_controller.js"
 }
 
-Method  Route                           Action (in controller ./controllers/user_controller.js)
+Method  Route                       Action (in controller ./controllers/user_controller.js)
 GET     /user               		->  index
 GET     /user.:format               ->  index
 GET     /user/new                   ->  new
@@ -91,5 +91,37 @@ OR
 	"path_to_controller:method_name" 
 	]
 }
+```
+
+app-router also support text routing
+
+```javascript
+router(app).setCWD(__dirname).route("./routes/route.txt");
+
+```
+
+sample  <b> route.txt </b>
+
+```javascript
+
+VARIABLE	cp 	./controllers/my_controller
+
+VARIABLE	other_controller	./controllers/other_controller.js
+
+GET	/user_controller	{cp}:myMiddleWareFunction 	{cp}:myMethod
+
+GET	/user/:id	./controllers/other_controller.js
+
+POST	/hello	./controllers/my_controller:createApp
+
+PUT	/hello	./controllers/my_controller:createApp
+
+DELETE	/user 	./controllers/other_controller.js:destroyApp
+
+RESOURCE	/res 	{cp}
+
+RESOURCE	/user 	./controllers/user_controller.js
+
+
 ```
 
