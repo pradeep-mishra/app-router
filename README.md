@@ -68,7 +68,7 @@ DELETE  /user/:id                   ->  destroy
 DELETE  /user/:id.:format           ->  destroy
 
 ```
-Basic syntax for config.json
+Basic syntax for route.json
 
 ```javascript
 {"/app_route" : [ "path_to_controller:method_name" ]}
