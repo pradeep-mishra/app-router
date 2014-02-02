@@ -9,8 +9,13 @@ routing for expressjs
 var express= require("express");
 var app = express();
 var router = require("app-router");
-router(app).route("./route.json");
+router(app).setCWD(__dirname).route("./routes/route.json");
 
+```
+setting current working directory (CWD) relative to all controllers path and route.json
+
+```javascript
+setCWD(__dirname)
 ```
 
 sample <b> route.json </b>
@@ -19,7 +24,7 @@ sample <b> route.json </b>
 {
     "GLOBAL":{
         "cp":"./controllers/my_controller",
-    	"other_controller":"./controllers/other_controller.js"
+        "other_controller":"./controllers/other_controller.js"
 	},
 	"GET":{
 		"/user" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"],
