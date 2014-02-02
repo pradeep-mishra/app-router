@@ -57,6 +57,7 @@ Actions are mapped accordingly:
 }
 
 Method  Route                       Action (in controller ./controllers/user_controller.js)
+
 GET     /user               		->  index
 GET     /user.:format               ->  index
 GET     /user/new                   ->  new
