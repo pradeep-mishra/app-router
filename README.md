@@ -111,7 +111,7 @@ VARIABLE	other_controller	./controllers/other_controller.js
 
 GET	/user_controller	{cp}:myMiddleWareFunction 	{cp}:myMethod
 
-GET	/user/:id	./controllers/other_controller.js
+GET	/user/:id	./controllers/other_controller:myClass.myAction
 
 POST	/hello	./controllers/my_controller:createApp
 
