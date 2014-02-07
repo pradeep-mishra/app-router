@@ -26,7 +26,7 @@ sample <b> route.json </b>
         "cp":"./controllers/my_controller",
         "other_controller":"./controllers/other_controller.js"
     },
-	"GET":{
+    "GET":{
 		"/user" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"],
 		"/user/:id" : "{cp}:myClass.myMethod"
 	},
@@ -53,7 +53,7 @@ Actions are mapped accordingly:
 ```javascript
 
 "RESOURCE":{
-	"/user" : "./controllers/user_controller.js"
+	"/user" : "./controllers/user_controller"
 }
 
 Method  Route                       Action (in controller ./controllers/user_controller.js)
@@ -94,7 +94,41 @@ OR
 }
 ```
 
-app-router also support text routing
+
+
+<b>Yaml</b> routing in app-router
+
+```javascript
+router(app).setCWD(__dirname).route("./routes/route.yml");
+
+```
+
+sample  <b> route.yml </b>
+
+```yml
+
+VARIABLE: 
+  cp: "./controllers/my_controller"
+  other_controller: "./controllers/other_controller.js"
+GET: 
+  /user: 
+    - "{cp}:myMiddleWareFunction"
+    - "{cp}:myMethod"
+  /user/:id: "{cp}:myClass.myMethod"
+POST: 
+  /hello: "./controllers/my_controller:createApp"
+PUT: 
+  /hello: "{other_controller}:helloPut"
+DELETE: 
+  /user: "./controllers/other_controller.js:destroyApp"
+RESOURCE: 
+  /res: "{cp}"
+  /user: "./controllers/user_controller.js"
+
+```
+
+
+<b>Text</b> routing in app-router
 
 ```javascript
 router(app).setCWD(__dirname).route("./routes/route.txt");
@@ -105,23 +139,23 @@ sample  <b> route.txt </b>
 
 ```javascript
 
-VARIABLE	cp 	./controllers/my_controller
+VARIABLE    cp 	                ./controllers/my_controller
 
 VARIABLE	other_controller	./controllers/other_controller.js
 
-GET	/user_controller	{cp}:myMiddleWareFunction 	{cp}:myMethod
+GET	        /user_controller	{cp}:myMiddleWareFunction 	{cp}:myMethod
 
-GET	/user/:id	./controllers/other_controller:myClass.myAction
+GET	        /user/:id	        ./controllers/other_controller:myClass.myAction
 
-POST	/hello	./controllers/my_controller:createApp
+POST	    /hello	            ./controllers/my_controller:createApp
 
-PUT	/hello	./controllers/my_controller:createApp
+PUT	        /hello	            ./controllers/my_controller:createApp
 
-DELETE	/user 	./controllers/other_controller.js:destroyApp
+DELETE	    /user 	            ./controllers/other_controller.js:destroyApp
 
-RESOURCE	/res 	{cp}
+RESOURCE	/res 	            {cp}
 
-RESOURCE	/user 	./controllers/user_controller.js
+RESOURCE	/user 	            ./controllers/user_controller.js
 
 
 ```

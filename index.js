@@ -23,7 +23,7 @@ var interPolateArray = function(arry, obj){
 }
 
 var startRouting= function(routes, expressApp, mainPath){
-	var _VARIABLE= routes.VARIABLE || {};
+	var _VARIABLE= routes.VARIABLE || routes.variable || {};
 	Object.keys(routes).forEach(function(item){
         if(item.match(/get|post|put|delete|options|resource/i)){
         	routeMethod(routes[item], item, _VARIABLE, expressApp, mainPath);   
@@ -133,7 +133,8 @@ var resourceThis= function(route, controller, expressApp, _VARIABLE, mainPath){
 }
 
 var textToJSON=function(txtPath, mainPath){
-	var text = fs.readFileSync(path.join(mainPath, txtPath), {encoding:"utf8"});
+	//var text = fs.readFileSync(path.join(mainPath, txtPath), {encoding:"utf8"});
+	var text = loadText(txtPath, mainPath);
 	var lines = text.split('\n');
 	var strToObj={};
 	lines.forEach(function(line, num){
@@ -152,17 +153,23 @@ var textToJSON=function(txtPath, mainPath){
 	return strToObj; 
 }
 
+var loadText= function(filePath, mainPath){
+	return fs.readFileSync(path.join(mainPath, filePath), "utf8");	
+}
+
 var router=module.exports= function(expressApp){
 	return new (function(){
-		this.route = function(jsonPath){
+		this.route = function(filePath){
 			if(!this.path){
 				throw new Error("set working directory first , use setCWD() method");
 			}
 			var routes;
-			if(path.extname(routePath) == ".txt"){
-				routes =textToJSON(routePath, this.path);
+			if(path.extname(filePath) == ".txt"){
+				routes = textToJSON(filePath, this.path);
+			}else if(path.extname(filePath) == ".yml"){
+				routes = require('js-yaml').load(loadText(filePath, this.path));
 			}else{
-				routes = require(path.join(this.path, routePath));
+				routes = require(path.join(this.path, filePath));
 			}
 			startRouting(routes, expressApp, this.path);
 
@@ -171,7 +178,6 @@ var router=module.exports= function(expressApp){
 			this.path=mainPath;
 			return this;
 		}
-	})();
-	
+	})();	
 }
 

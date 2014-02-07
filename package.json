@@ -1,8 +1,8 @@
 {
     "name": "app-router",
-    "version": "0.0.7",
+    "version": "0.0.9",
     "description":"Routing for expressjs",
-    "keywords":["express router", "application router", "app-router", "express", "connect", "router", "routing", "json to router", "json-router"],
+    "keywords":["express router", "application router", "app-router", "yaml-router", "yml-router", "yaml routing", "express", "connect", "router", "routing", "json router", "json-router"],
     "bugs":{ 
     	"url" : "https://github.com/pradeep-mishra/app-router/issues"
 	},
@@ -11,9 +11,12 @@
 		"email" : "pradeep23oct@gmail.com"
 	},
 	"main":"index.js",
+	"dependencies":{
+		"js-yaml":"3.0.1"
+	},
 	"repository" :{ 
 		"type" : "git", 
 		"url" : "https://github.com/pradeep-mishra/app-router.git"
   	},
   	"license":"MIT"
-}
+}`
