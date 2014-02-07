@@ -1,6 +1,6 @@
 {
     "name": "app-router",
-    "version": "0.0.9",
+    "version": "0.1.0",
     "description":"Routing for expressjs",
     "keywords":["express router", "application router", "app-router", "yaml-router", "yml-router", "yaml routing", "express", "connect", "router", "routing", "json router", "json-router"],
     "bugs":{ 
@@ -19,4 +19,4 @@
 		"url" : "https://github.com/pradeep-mishra/app-router.git"
   	},
   	"license":"MIT"
-}`
+}

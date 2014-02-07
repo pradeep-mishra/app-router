@@ -12,11 +12,25 @@ var router = require("app-router");
 router(app).setCWD(__dirname).route("./routes/route.json");
 
 ```
-setting current working directory (CWD) relative to all controllers path and route.json
+set current working directory (CWD) relative to all controllers path and route.json
 
 ```javascript
 setCWD(__dirname)
 ```
+suppress throwing Error on unresolved action of route
+
+```javascript
+throwErrorOnWrongActionPath(false)
+
+```
+
+console.log all routing mapped by app-router
+
+```javascript
+showRouteInConsole(true)
+
+```
+
 
 sample <b> route.json </b>
 
@@ -27,7 +41,7 @@ sample <b> route.json </b>
         "other_controller":"./controllers/other_controller.js"
     },
     "GET":{
-		"/user" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"],
+    	"/user" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"],
 		"/user/:id" : "{cp}:myClass.myMethod"
 	},
 	"POST":{

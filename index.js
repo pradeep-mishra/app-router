@@ -1,6 +1,8 @@
 var fs=require("fs"),
 	path=require("path"),
-	util=require("util");
+	util=require("util"),
+    showRoute = false,
+    throwError = true;
 
 var interPolate = function (str, iObj) {
     return str.replace(/{([^{}]+)}/g,
@@ -24,6 +26,9 @@ var interPolateArray = function(arry, obj){
 
 var startRouting= function(routes, expressApp, mainPath){
 	var _VARIABLE= routes.VARIABLE || routes.variable || {};
+    Object.keys(_VARIABLE).forEach(function(item){
+        _VARIABLE[item]= interPolate(_VARIABLE[item], _VARIABLE);
+    });
 	Object.keys(routes).forEach(function(item){
         if(item.match(/get|post|put|delete|options|resource/i)){
         	routeMethod(routes[item], item, _VARIABLE, expressApp, mainPath);   
@@ -65,6 +70,9 @@ var routeThis = function(route, methodType, controllers, expressApp, _VARIABLE, 
 	actions.unshift(route);
 	if(methodType=="delete"){methodType="del"}
 	expressApp[methodType].apply(expressApp, actions);
+    if(showRoute){
+        console.log(methodType, route, controllers);
+    }
 }
 
 var resolveThisMethod =function(item, mainPath){
@@ -77,9 +85,19 @@ var resolveThisMethod =function(item, mainPath){
 		if(typeof controller[item] != 'undefined'){
 			controller=controller[item];
 		}else{
-			throw new Error("cant find action " + item + " in controller " + c_a[0]);
+            if(throwError){
+                throw new Error("cant find action : " + c_a[1] + " in controller " + path.join(mainPath,c_a[1]));
+            }else{
+                controller = function(req, res){
+                    res.send(400, "Action Not Found");
+                }
+                return false;
+            }
 		}
 	});
+    if(throwError && typeof controller != "function"){
+        throw new Error("cant find action : " + c_a[1] + " in controller " + path.join(mainPath,c_a[1]));
+    }
 	return controller;
 }
 
@@ -123,17 +141,20 @@ var resourceThis= function(route, controller, expressApp, _VARIABLE, mainPath){
 	}
 	Object.keys(resourcing).forEach(function(item){
 		var action = require(path.join(mainPath,controller))[item];
-		if(typeof action != "function"){
-			throw new Error("cant find action "+ item + " in controller " + controller);
-		}
 		var appRoute = route + resourcing[item].route;
+        if(throwError && typeof action != "function"){
+            throw new Error("cant find action : " + item + " in controller " + path.join(mainPath,controller));
+        }
 		expressApp[resourcing[item].verb](appRoute+".:format", action);
-		expressApp[resourcing[item].verb](appRoute, action);		
+		expressApp[resourcing[item].verb](appRoute, action);
+        if(showRoute){
+            console.log(resourcing[item].verb, appRoute + ".:format", path.join(mainPath,controller) + "#" + item);
+            console.log(resourcing[item].verb, appRoute, path.join(mainPath,controller) + "#" + item);
+        }
 	});
 }
 
 var textToJSON=function(txtPath, mainPath){
-	//var text = fs.readFileSync(path.join(mainPath, txtPath), {encoding:"utf8"});
 	var text = loadText(txtPath, mainPath);
 	var lines = text.split('\n');
 	var strToObj={};
@@ -161,7 +182,7 @@ var router=module.exports= function(expressApp){
 	return new (function(){
 		this.route = function(filePath){
 			if(!this.path){
-				throw new Error("set working directory first , use setCWD() method");
+				throw new Error("set current working directory first , use setCWD() method");
 			}
 			var routes;
 			if(path.extname(filePath) == ".txt"){
@@ -174,6 +195,20 @@ var router=module.exports= function(expressApp){
 			startRouting(routes, expressApp, this.path);
 
 		},
+        this.showRouteInConsole = function(bool){
+            if(typeof bool == "undefined"){
+               bool =true;
+            }
+            showRoute = Boolean(bool);
+            return this;
+        },
+        this.throwErrorOnWrongActionPath = function(bool){
+            if(typeof bool == "undefined"){
+                bool =true;
+            }
+            throwError = Boolean(bool);
+            return this;
+        },
 		this.setCWD = function(mainPath){
 			this.path=mainPath;
 			return this;
