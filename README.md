@@ -58,12 +58,12 @@ sample <b> route.json </b>
 
 ```javascript
 {
-    "VARIABLE":{
-        "cp":"./controllers/my_controller",
-        "other_controller":"./controllers/other_controller.js"
-    },
-    "GET":{
-        "/user" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"],
+  "VARIABLE":{
+    "cp":"./controllers/my_controller",
+    "other_controller":"./controllers/other_controller.js"
+  },
+  "GET":{
+    "/user" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"],
     "/user/:id" : "{cp}:myClass.myMethod"
   },
   "POST":{
@@ -175,23 +175,23 @@ sample  <b> route.txt </b>
 
 ```javascript
 
-VARIABLE    cp                  ./controllers/my_controller
+VARIABLE  cp                    ./controllers/my_controller
 
-VARIABLE  other_controller  ./controllers/other_controller.js
+VARIABLE  other_controller      ./controllers/other_controller.js
 
-GET         /user_controller  {cp}:myMiddleWareFunction   {cp}:myMethod
+GET       /user_controller      {cp}:myMiddleWareFunction   {cp}:myMethod
 
-GET         /user/:id         ./controllers/other_controller:myClass.myAction
+GET       /user/:id             ./controllers/other_controller:myClass.myAction
 
-POST      /hello              ./controllers/my_controller:createApp
+POST      /hello                ./controllers/my_controller:createApp
 
-PUT         /hello              ./controllers/my_controller:createApp
+PUT       /hello                ./controllers/my_controller:createApp
 
-DELETE      /user               ./controllers/other_controller.js:destroyApp
+DELETE    /user                 ./controllers/other_controller.js:destroyApp
 
-RESOURCE  /res              {cp}
+RESOURCE  /res                  {cp}
 
-RESOURCE  /user               ./controllers/user_controller.js
+RESOURCE  /user                 ./controllers/user_controller.js
 
 
 ```
