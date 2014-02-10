@@ -2,7 +2,9 @@ var fs=require("fs"),
 	path=require("path"),
 	util=require("util"),
     showRoute = false,
-    throwError = true;
+    throwError = true,
+    handler = null,
+    useFormat = true;
 
 var interPolate = function (str, iObj) {
     return str.replace(/{([^{}]+)}/g,
@@ -67,9 +69,14 @@ var routeThis = function(route, methodType, controllers, expressApp, _VARIABLE, 
 	}else{
 		actions=[resolveThisMethod(controllers, mainPath)];
 	}
-	actions.unshift(route);
-	if(methodType=="delete"){methodType="del"}
-	expressApp[methodType].apply(expressApp, actions);
+	
+	if(handler){
+		handler(methodType , route, actions);
+	}else{
+		if(methodType=="delete"){methodType="del"}
+		actions.unshift(route);
+		expressApp[methodType].apply(expressApp, actions);	
+	}
     if(showRoute){
         console.log(methodType, route, controllers);
     }
@@ -145,8 +152,18 @@ var resourceThis= function(route, controller, expressApp, _VARIABLE, mainPath){
         if(throwError && typeof action != "function"){
             throw new Error("cant find action : " + item + " in controller " + path.join(mainPath,controller));
         }
-		expressApp[resourcing[item].verb](appRoute+".:format", action);
-		expressApp[resourcing[item].verb](appRoute, action);
+		if(handler){
+			if(useFormat){
+				handler(resourcing[item].verb, appRoute + ".:format" , [action]);	
+			}
+			handler(resourcing[item].verb, appRoute, [action]);
+		}else{
+			if(useFormat){
+				expressApp[resourcing[item].verb](appRoute+".:format", action);
+			}
+			expressApp[resourcing[item].verb](appRoute, action);	
+		}
+		
         if(showRoute){
             console.log(resourcing[item].verb, appRoute + ".:format", path.join(mainPath,controller) + "#" + item);
             console.log(resourcing[item].verb, appRoute, path.join(mainPath,controller) + "#" + item);
@@ -195,7 +212,7 @@ var router=module.exports= function(expressApp){
 			startRouting(routes, expressApp, this.path);
 
 		},
-        this.showRouteInConsole = function(bool){
+        this.logRoute = function(bool){
             if(typeof bool == "undefined"){
                bool =true;
             }
@@ -212,6 +229,19 @@ var router=module.exports= function(expressApp){
 		this.setCWD = function(mainPath){
 			this.path=mainPath;
 			return this;
+		},
+		this.letMeAttach = function(handle){
+			if(typeof handle == "function"){
+				handler=handle;
+			}
+			return this;
+		},
+		this.useFormatInResource = function(bool){
+			if(typeof bool == "undefined"){
+                bool =true;
+            }
+            useFormat = Boolean(bool);
+            return this;
 		}
 	})();	
 }
