@@ -94,14 +94,14 @@ Actions are mapped accordingly:
 
 Method  Route                       Action (in controller ./controllers/user_controller.js)
 
-GET     /user                   ->  index
+GET     /user                       ->  index
 GET     /user.:format               ->  index
 GET     /user/new                   ->  new
 GET     /user/new.:format           ->  new
 POST    /user                       ->  create
-POST    /user.:format             ->  create
-GET     /user/:id               ->  show
-GET     /user/:id.:format         ->  show
+POST    /user.:format               ->  create
+GET     /user/:id                   ->  show
+GET     /user/:id.:format           ->  show
 GET     /user/:id/edit              ->  edit
 GET     /user/:id/edit.:format      ->  edit
 PUT     /user/:id                   ->  update
