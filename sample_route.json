@@ -2,7 +2,8 @@
 {
     "GLOBAL":{
         "cp":"./controllers/my_controller",
-		"other_controller":"./controllers/other_controller.js"
+		"other_controller":"./controllers/other_controller.js",
+		"App":"<App>"
 	},
 	"GET":{
 		"/" : ["{cp}:myMiddleWareFunction" , "{cp}:myMethod"],

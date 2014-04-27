@@ -6,7 +6,7 @@ var fs=require("fs"),
     handler = null,
     useFormat = true;
 
-var interPolate = function (str, iObj) {
+var interPolateStr = function (str, iObj) {
     return str.replace(/{([^{}]+)}/g,
         function (a, b) {
         	var interObject=iObj;
@@ -20,22 +20,50 @@ var interPolate = function (str, iObj) {
     );
 };
 
-var interPolateArray = function(arry, obj){
+var interPolateStrArray = function(arry, obj){
 	return arry.map(function(item){
-		return interPolate(item, obj);
+		return interPolateStr(item, obj);
 	});	
 }
 
+var interPolateObj = function (str, iObj) {
+	iObj = iObj || GLOBAL ;
+    return str.replace(/<([^<>]+)>/,
+        function (a, b) {
+        	var interObject=iObj;
+        	b.split(".").forEach(function(item){
+        		if(typeof interObject[item] != 'undefined'){
+        			interObject=interObject[item];
+        		}
+        	});
+            return (typeof interObject == "function" ? interObject : a) ;
+        }
+    );
+};
+
+var interPolateObjArray = function(arry, obj){
+	return arry.map(function(item){
+		return interPolateObj(item, obj);
+	});	
+}
+
+
+
 var startRouting= function(routes, expressApp, mainPath){
-	var _VARIABLE= routes.VARIABLE || routes.variable || {};
-    Object.keys(_VARIABLE).forEach(function(item){
-        _VARIABLE[item]= interPolate(_VARIABLE[item], _VARIABLE);
-    });
+	var _VARIABLE= inrePolateVar(routes);
 	Object.keys(routes).forEach(function(item){
         if(item.match(/get|post|put|delete|options|resource/i)){
         	routeMethod(routes[item], item, _VARIABLE, expressApp, mainPath);   
         }
     });
+}
+
+var inrePolateVar = function(routes){
+	var _VARIABLE= routes.VARIABLE || routes.variable || {};
+    Object.keys(_VARIABLE).forEach(function(item){
+        _VARIABLE[item]= interPolateStr(_VARIABLE[item], _VARIABLE);
+    });
+    return _VARIABLE;
 }
 
 var routeMethod = function(routes, methodType, _VARIABLE, expressApp, mainPath){
@@ -50,8 +78,8 @@ var routeMethod = function(routes, methodType, _VARIABLE, expressApp, mainPath){
 var processRoute = function(routes, methodType, _VARIABLE, expressApp, mainPath){
 	Object.keys(routes).forEach(function(item){
 		var controller =util.isArray(routes[item])?
-						interPolateArray(routes[item], _VARIABLE):
-						interPolate(routes[item], _VARIABLE);
+						interPolateStrArray(routes[item], _VARIABLE):
+						interPolateStr(routes[item], _VARIABLE);
 		routeThis(item, methodType, controller, expressApp, _VARIABLE, mainPath);
 	});
 }
