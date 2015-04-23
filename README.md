@@ -1,3 +1,6 @@
+[![NPM](https://nodei.co/npm/app-router.svg?downloads=true&downloadRank=true)](https://nodei.co/npm/app-router/)&nbsp;&nbsp;
+[![Build Status](https://travis-ci.org/pradeep-mishra/app-router.svg?branch=master)](https://travis-ci.org/pradeep-mishra/app-router)
+
 app-router
 ==============
 

@@ -1,6 +1,6 @@
 {
     "name": "app-router",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description":"Routing for expressjs",
     "keywords":["express router", "application router", "app-router", "yaml-router", "yml-router", "yaml routing", "express", "connect", "router", "routing", "json router", "json-router"],
     "bugs":{ 
