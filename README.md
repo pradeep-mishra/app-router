@@ -42,7 +42,6 @@ letMeAttach(function(method, route, actions){
     // route {String} = given by user or created by resource eg /user
     // actions {Array} = an array of actions resolved
     // routing example in express
-    method = method.replace("delete","del");
     actions.unshift(route);
     app[method].apply(app, actions);
 
