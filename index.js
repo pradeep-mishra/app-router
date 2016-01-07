@@ -1,6 +1,6 @@
-var fs=require("fs"),
-	path=require("path"),
-	util=require("util"),
+var fs = require("fs"),
+	path = require("path"),
+	util = require("util"),
     showRoute = false,
     throwError = true,
     handler = null,
@@ -9,7 +9,7 @@ var fs=require("fs"),
 var interPolateStr = function (str, iObj) {
     return str.replace(/{([^{}]+)}/g,
         function (a, b) {
-        	var interObject=iObj;
+        	var interObject = iObj;
         	b.split(".").forEach(function(item){
         		if(typeof interObject[item] != 'undefined'){
         			interObject=interObject[item];
@@ -30,10 +30,10 @@ var interPolateObj = function (str, iObj) {
 	iObj = iObj || GLOBAL ;
     return str.replace(/<([^<>]+)>/,
         function (a, b) {
-        	var interObject=iObj;
+        	var interObject = iObj;
         	b.split(".").forEach(function(item){
         		if(typeof interObject[item] != 'undefined'){
-        			interObject=interObject[item];
+        			interObject = interObject[item];
         		}
         	});
             return (typeof interObject == "function" ? interObject : a) ;
@@ -49,19 +49,19 @@ var interPolateObjArray = function(arry, obj){
 
 
 
-var startRouting= function(routes, expressApp, mainPath){
-	var _VARIABLE= inrePolateVar(routes);
+var startRouting = function(routes, expressApp, mainPath){
+	var _VARIABLE = inrePolateVar(routes);
 	Object.keys(routes).forEach(function(item){
-        if(item.match(/get|post|put|delete|options|resource/i)){
+        if(item.match(/get|post|put|delete|del|options|patch|resource/i)){
         	routeMethod(routes[item], item, _VARIABLE, expressApp, mainPath);   
         }
     });
 }
 
 var inrePolateVar = function(routes){
-	var _VARIABLE= routes.VARIABLE || routes.variable || {};
+	var _VARIABLE = routes.VARIABLE || routes.variable || { };
     Object.keys(_VARIABLE).forEach(function(item){
-        _VARIABLE[item]= interPolateStr(_VARIABLE[item], _VARIABLE);
+        _VARIABLE[item] = interPolateStr(_VARIABLE[item], _VARIABLE);
     });
     return _VARIABLE;
 }
@@ -77,7 +77,7 @@ var routeMethod = function(routes, methodType, _VARIABLE, expressApp, mainPath){
 
 var processRoute = function(routes, methodType, _VARIABLE, expressApp, mainPath){
 	Object.keys(routes).forEach(function(item){
-		var controller =util.isArray(routes[item])?
+		var controller = util.isArray(routes[item])?
 						interPolateStrArray(routes[item], _VARIABLE):
 						interPolateStr(routes[item], _VARIABLE);
 		routeThis(item, methodType, controller, expressApp, _VARIABLE, mainPath);
@@ -85,23 +85,23 @@ var processRoute = function(routes, methodType, _VARIABLE, expressApp, mainPath)
 }
 
 var routeThis = function(route, methodType, controllers, expressApp, _VARIABLE, mainPath){
-	methodType=methodType.toLowerCase();
-	if(methodType=="resource"){
+	methodType = methodType.toLowerCase();
+	if(methodType === "resource"){
 		return resourceThis(route, controllers, expressApp, _VARIABLE, mainPath);
 	}
 	var actions;
 	if(util.isArray(controllers)){
-		actions=controllers.map(function(item){
+		actions = controllers.map(function(item){
 			return resolveThisMethod(item, mainPath);
 		});
 	}else{
-		actions=[resolveThisMethod(controllers, mainPath)];
+		actions = [resolveThisMethod(controllers, mainPath)];
 	}
 	
 	if(handler){
 		handler(methodType , route, actions);
 	}else{
-		if(methodType=="delete"){methodType="del"}
+		//if(methodType === "delete"){methodType = "del"}
 		actions.unshift(route);
 		expressApp[methodType].apply(expressApp, actions);	
 	}
@@ -110,15 +110,15 @@ var routeThis = function(route, methodType, controllers, expressApp, _VARIABLE, 
     }
 }
 
-var resolveThisMethod =function(item, mainPath){
-	var c_a=item.split(":");
+var resolveThisMethod = function(item, mainPath){
+	var c_a = item.split(":");
 	if(c_a.length != 2){
 		throw new Error("Invalid routing: "+ item);
 	}
-	var controller= require(path.join(mainPath, c_a[0]));
+	var controller = require(path.join(mainPath, c_a[0]));
 	c_a[1].split(".").forEach(function(item){
 		if(typeof controller[item] != 'undefined'){
-			controller=controller[item];
+			controller = controller[item];
 		}else{
             if(throwError){
                 throw new Error("cant find action : " + c_a[1] + " in controller " + path.join(mainPath,c_a[1]));
@@ -136,8 +136,8 @@ var resolveThisMethod =function(item, mainPath){
 	return controller;
 }
 
-var resourceThis= function(route, controller, expressApp, _VARIABLE, mainPath){
-	var resourcing={
+var resourceThis = function(route, controller, expressApp, _VARIABLE, mainPath){
+	var resourcing = {
 		index:{
 			verb:"get",
 			method:"index",
@@ -187,7 +187,7 @@ var resourceThis= function(route, controller, expressApp, _VARIABLE, mainPath){
 			handler(resourcing[item].verb, appRoute, [action]);
 		}else{
 			if(useFormat){
-				expressApp[resourcing[item].verb](appRoute+".:format", action);
+				expressApp[resourcing[item].verb](appRoute + ".:format", action);
 			}
 			expressApp[resourcing[item].verb](appRoute, action);	
 		}
@@ -202,28 +202,28 @@ var resourceThis= function(route, controller, expressApp, _VARIABLE, mainPath){
 var textToJSON=function(txtPath, mainPath){
 	var text = loadText(txtPath, mainPath);
 	var lines = text.split('\n');
-	var strToObj={};
+	var strToObj = { };
 	lines.forEach(function(line, num){
-		var cmds =line.split(/[\s\t]+/);
+		var cmds = line.split(/[\s\t]+/);
 		if(cmds.length < 3){
 			if(cmds.length > 1){
-				throw new Error("Invalid Routing line number:" + (num+1) + " " +line);	
+				throw new Error("Invalid Routing line number:" + (num + 1) + " " + line);	
 			}
 			return false; 
 		}
 		var verb = cmds.shift().trim().toUpperCase(),
 			route = cmds.shift().trim();
 		strToObj[verb] = strToObj[verb] || {};
-		strToObj[verb][route]= (cmds.length > 1 ? cmds : cmds[0]);
+		strToObj[verb][route] = (cmds.length > 1 ? cmds : cmds[0]);
 	});
 	return strToObj; 
 }
 
-var loadText= function(filePath, mainPath){
+var loadText = function(filePath, mainPath){
 	return fs.readFileSync(path.join(mainPath, filePath), "utf8");	
 }
 
-var router=module.exports= function(expressApp){
+var router = module.exports = function(expressApp){
 	return new (function(){
 		this.route = function(filePath){
 			if(!this.path){
@@ -242,31 +242,31 @@ var router=module.exports= function(expressApp){
 		},
         this.logRoute = function(bool){
             if(typeof bool == "undefined"){
-               bool =true;
+               bool = true;
             }
             showRoute = Boolean(bool);
             return this;
         },
         this.throwErrorOnWrongActionPath = function(bool){
             if(typeof bool == "undefined"){
-                bool =true;
+                bool = true;
             }
             throwError = Boolean(bool);
             return this;
         },
 		this.setCWD = function(mainPath){
-			this.path=mainPath;
+			this.path = mainPath;
 			return this;
 		},
 		this.letMeAttach = function(handle){
 			if(typeof handle == "function"){
-				handler=handle;
+				handler = handle;
 			}
 			return this;
 		},
 		this.useFormatInResource = function(bool){
 			if(typeof bool == "undefined"){
-                bool =true;
+                bool = true;
             }
             useFormat = Boolean(bool);
             return this;
